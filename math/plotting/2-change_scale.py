@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-This code creates a line graph with time on the x-axis and
+This script creates a line graph with time on the x-axis and
 the fraction remaining on the y-axis to illustrate the exponential
 decay of C-14 over time. The range of the x-axis is 0 to 28650 years
 , and the y-axis is scaled logarithmically.
