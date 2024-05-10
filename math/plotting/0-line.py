@@ -2,7 +2,7 @@
 '''
 This is a script to plot a line graph with even values from 
 0 to 10 on the x axis and 0 to 1000(each number raised to power of 3)
-
+on th y axis.
 '''
 import numpy as np
 import matplotlib.pyplot as plt
