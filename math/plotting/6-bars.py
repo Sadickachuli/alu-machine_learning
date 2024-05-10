@@ -18,7 +18,8 @@ width = 0.5
 
 for i, fruit_name in enumerate(fruits):
     bottom = np.sum(fruit[:i], axis=0)
-    ax.bar(labels, fruit[i], width, label=fruit_name, color=colors[i], bottom=bottom)
+    ax.bar(labels, fruit[i], width, label=fruit_name,
+           color=colors[i], bottom=bottom)
 
 ax.set_ylabel('Quantity of Fruit')
 ax.set_title('Number of Fruit per Person')
