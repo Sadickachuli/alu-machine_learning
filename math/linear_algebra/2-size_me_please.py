@@ -2,7 +2,13 @@
 
 def matrix_shape(matrix):
     """
-    Shape function
+    Calculates the shape of a matrix.
+
+    Args:
+        matrix (list): The matrix whose shape needs to be calculated.
+
+    Returns:
+        list: A list containing the dimensions of the matrix.
     """
     dimension = []
     while isinstance(matrix, list):
