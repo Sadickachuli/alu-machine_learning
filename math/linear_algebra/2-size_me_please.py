@@ -2,10 +2,7 @@
 
 def matrix_shape(matrix):
     """
-    This function computes the shape of a matrix by iterating
-    over its nested lists and appending the length of each dimension
-    to a list called dimension. It then returns this list, which contains
-    the dimensions of the matrix.
+    Shape function
     """
     dimension = []
     while isinstance(matrix, list):
