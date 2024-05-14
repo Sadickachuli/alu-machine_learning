@@ -10,8 +10,8 @@ def matrix_shape(matrix):
     Returns:
         list: A list containing the dimensions of the matrix.
     """
-    dimension = []
-    while isinstance(matrix, list):
+    dimension = []  # Initialize an empty list to store the dimensions of the matrix
+    while isinstance(matrix, list):  # Loop while 'matrix' is a list
         dimension.append(len(matrix))
         matrix = matrix[0]
     return dimension
