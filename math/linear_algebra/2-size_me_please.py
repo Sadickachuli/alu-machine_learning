@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Module to determine the shape of a matrix."""
+"""This will determine the shape of a matrix."""
 
 
 def matrix_shape(matrix):
