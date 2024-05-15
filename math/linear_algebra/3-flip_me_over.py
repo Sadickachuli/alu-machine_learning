@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""This will determine the shape of a matrix."""
+"""This function will return the transpose of a matrix."""
 
 
 def matrix_transpose(matrix):
