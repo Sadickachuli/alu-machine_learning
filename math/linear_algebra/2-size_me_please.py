@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-"""Calculates the shape of a matrix."""
+
+"""Module to determine the shape of a matrix."""
 
 
 def matrix_shape(matrix):
-    """
-    Calculates the shape of a matrix.
+    """Determine the shape of a matrix.
 
     Args:
-        matrix (list): The matrix whose shape needs to be calculated.
+        matrix (list): A nested list representing a matrix.
 
     Returns:
         list: A list containing the dimensions of the matrix.
+
     """
     dimension = []  # Initialize an empty list to store the dimensions
     while isinstance(matrix, list):  # Loop while 'matrix' is a list
