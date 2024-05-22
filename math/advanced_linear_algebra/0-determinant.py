@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def determinant(matrix):
     # Check if matrix is a list of lists
     if not isinstance(matrix, list) or not all(isinstance(row, list) for row in matrix):
