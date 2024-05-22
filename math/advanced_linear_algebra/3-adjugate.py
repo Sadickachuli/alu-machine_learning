@@ -9,6 +9,14 @@ determinant = __import__('0-determinant').determinant
 
 
 def transpose(matrix):
+    """
+    To find the transpose of a  matrix first
+      Args:
+       matrix
+
+    returns:
+        the transpose of matrix
+    """
     matrix_size = len(matrix)
     transpose_matrix = []
     for i in range(matrix_size):
