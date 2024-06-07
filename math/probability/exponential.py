@@ -38,7 +38,7 @@ class Exponential:
 
     def cdf(self, x):
         """
-        calculates the value of the CDF for a given time period 
+        calculates the value of the CDF for a given time period
         """
         if x < 0:
             return 0
