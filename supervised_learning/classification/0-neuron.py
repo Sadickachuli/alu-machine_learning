@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""This is a class neuron which defines a single neuron performing binary classification
+"""This class neuron defines a single neuron performing binary classification
 """
 
 
