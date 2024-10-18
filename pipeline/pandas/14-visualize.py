@@ -13,21 +13,24 @@ df.drop(columns=['Weighted_Price'], inplace=True)
 
 # Rename 'Timestamp' column to 'Date' and convert to datetime
 df.rename(columns={'Timestamp': 'Date'}, inplace=True)
-df['Date'] = pd.to_datetime(df['Date'], unit='s').dt.date
+df['Date'] = pd.to_datetime(df['Date'], unit='s')
 
 # Set 'Date' as the index
 df.set_index('Date', inplace=True)
 
 # Fill missing values
-df['Close'].fillna(method='ffill', inplace=True)
-df['High'].fillna(df['Close'], inplace=True)
-df['Low'].fillna(df['Close'], inplace=True)
-df['Open'].fillna(df['Close'], inplace=True)
-df['Volume_(BTC)'].fillna(0, inplace=True)
-df['Volume_(Currency)'].fillna(0, inplace=True)
+df['Close'] = df['Close'].fillna(method='ffill')
+df['High'] = df['High'].fillna(df['Close'])
+df['Low'] = df['Low'].fillna(df['Close'])
+df['Open'] = df['Open'].fillna(df['Close'])
+df['Volume_(BTC)'] = df['Volume_(BTC)'].fillna(0)
+df['Volume_(Currency)'] = df['Volume_(Currency)'].fillna(0)
 
-# Aggregate data to daily intervals from 2017 onwards
-df = df.loc['2017':].resample('D').agg({
+# Ensure 'Date' index is in datetime format and filter from 2017 onwards
+df = df[df.index >= '2017-01-01']
+
+# Aggregate data to daily intervals
+df = df.resample('D').agg({
     'High': 'max',
     'Low': 'min',
     'Open': 'mean',
@@ -48,3 +51,4 @@ plt.title('OHLC and Volume (BTC) from 2017 onwards')
 plt.legend()
 plt.grid(True)
 plt.show()
+
