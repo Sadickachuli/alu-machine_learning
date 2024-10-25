@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-""" Return location of a GitHub user"""
+""" Return location of a GitHub user or provide rate limit information """
 
 import requests
 import sys
@@ -16,7 +16,7 @@ def get_github_user_location(url):
                 rate_limit = int(rate_limit)
                 current_time = int(time.time())
                 diff = (rate_limit - current_time) // 60
-                print(f"Reset in {diff} min")
+                print("Reset in {} min".format(diff))
             else:
                 print("Rate limit exceeded. Try again later.")
                 
@@ -24,12 +24,15 @@ def get_github_user_location(url):
             print("Not found")
         elif res.status_code == 200:
             user_info = res.json()
-            location = user_info.get('location', 'Location not specified')
-            print(location)
+            location = user_info.get('location')
+            if location:
+                print(location)
+            else:
+                print("Location not specified")
         else:
-            print(f"Unexpected error: {res.status_code}")
+            print("Unexpected error: {}".format(res.status_code))
     except requests.RequestException as e:
-        print(f"Failed to retrieve data: {e}")
+        print("Failed to retrieve data: {}".format(e))
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
