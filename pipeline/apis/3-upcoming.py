@@ -3,29 +3,42 @@
 import requests
 from datetime import datetime
 
-
 if __name__ == '__main__':
-    """pipeline api"""
+    """Pipeline Api"""
     url = "https://api.spacexdata.com/v4/launches/upcoming"
-    r = requests.get(url)
-    recent = 0
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        launches = response.json()
 
-    for dic in r.json():
-        new = int(dic["date_unix"])
-        if recent == 0 or new < recent:
-            recent = new
-            launch_name = dic["name"]
-            date = dic["date_local"]
-            rocket_number = dic["rocket"]
-            launch_number = dic["launchpad"]
+        # Find the nearest upcoming launch
+        recent = None
+        for launch in launches:
+            launch_time = int(launch["date_unix"])
+            if recent is None or launch_time < recent["date_unix"]:
+                recent = launch
 
-    rurl = "https://api.spacexdata.com/v4/rockets/" + rocket_number
-    rocket_name = requests.get(rurl).json()["name"]
-    lurl = "https://api.spacexdata.com/v4/launchpads/" + launch_number
-    launchpad = requests.get(lurl)
-    launchpad_name = launchpad.json()["name"]
-    launchpad_local = launchpad.json()["locality"]
-    string = "{} ({}) {} - {} ({})".format(launch_name, date, rocket_name,
-                                           launchpad_name, launchpad_local)
+        if recent:
+            launch_name = recent["name"]
+            date = recent["date_local"]
+            rocket_id = recent["rocket"]
+            launchpad_id = recent["launchpad"]
 
-    print(string)
+            # Get Rocket Name
+            rocket_response = requests.get(f"https://api.spacexdata.com/v4/rockets/{rocket_id}")
+            rocket_name = rocket_response.json().get("name", "Unknown Rocket")
+
+            # Get Launchpad Information
+            launchpad_response = requests.get(f"https://api.spacexdata.com/v4/launchpads/{launchpad_id}")
+            launchpad_data = launchpad_response.json()
+            launchpad_name = launchpad_data.get("name", "Unknown Launchpad")
+            launchpad_location = launchpad_data.get("locality", "Unknown Location")
+
+            # Format and Print Result
+            print(f"{launch_name} ({date}) {rocket_name} - {launchpad_name} ({launchpad_location})")
+        else:
+            print("No upcoming launches found.")
+
+    except requests.RequestException as e:
+        print(f"Error fetching data: {e}")
+
