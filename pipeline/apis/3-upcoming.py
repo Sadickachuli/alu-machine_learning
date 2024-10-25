@@ -38,7 +38,7 @@ def get_launch_details(launch_data):
 
 def get_upcoming_launch():
     """
-    Retrieves information about the upcoming SpaceX launch.
+    Retrieves t information about the upcoming SpaceX launch.
     """
     try:
         url = 'https://api.spacexdata.com/v4/launches/upcoming'
