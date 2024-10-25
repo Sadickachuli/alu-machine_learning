@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-""" Return location of a GitHub user or provide rate limit information """
+""" Return location of a GitHub user"""
 
 import requests
 import sys
