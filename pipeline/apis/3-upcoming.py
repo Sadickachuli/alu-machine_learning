@@ -25,20 +25,20 @@ if __name__ == '__main__':
             launchpad_id = recent["launchpad"]
 
             # Get Rocket Name
-            rocket_response = requests.get(f"https://api.spacexdata.com/v4/rockets/{rocket_id}")
+            rocket_response = requests.get("https://api.spacexdata.com/v4/rockets/{}".format(rocket_id))
             rocket_name = rocket_response.json().get("name", "Unknown Rocket")
 
             # Get Launchpad Information
-            launchpad_response = requests.get(f"https://api.spacexdata.com/v4/launchpads/{launchpad_id}")
+            launchpad_response = requests.get("https://api.spacexdata.com/v4/launchpads/{}".format(launchpad_id))
             launchpad_data = launchpad_response.json()
             launchpad_name = launchpad_data.get("name", "Unknown Launchpad")
             launchpad_location = launchpad_data.get("locality", "Unknown Location")
 
             # Format and Print Result
-            print(f"{launch_name} ({date}) {rocket_name} - {launchpad_name} ({launchpad_location})")
+            print("{} ({}) {} - {} ({})".format(launch_name, date, rocket_name, launchpad_name, launchpad_location))
         else:
             print("No upcoming launches found.")
 
     except requests.RequestException as e:
-        print(f"Error fetching data: {e}")
+        print("Error fetching data: {}".format(e))
 
