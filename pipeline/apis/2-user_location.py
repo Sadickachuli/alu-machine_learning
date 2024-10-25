@@ -1,35 +1,39 @@
 #!/usr/bin/env python3
 
-import sys
+""" Return location of a GitHub user or provide rate limit information """
+
 import requests
+import sys
 import time
 
-def get_user_location(url):
+def get_github_user_location(url):
     try:
-        response = requests.get(url)
-        status_code = response.status_code
+        res = requests.get(url)
         
-        if status_code == 200:
-            data = response.json()
-            location = data.get('location')
-            if location:
-                print(location)
+        if res.status_code == 403:
+            rate_limit = res.headers.get('X-Ratelimit-Reset')
+            if rate_limit:
+                rate_limit = int(rate_limit)
+                current_time = int(time.time())
+                diff = (rate_limit - current_time) // 60
+                print(f"Reset in {diff} min")
             else:
-                print("Location not specified")
-        elif status_code == 404:
+                print("Rate limit exceeded. Try again later.")
+                
+        elif res.status_code == 404:
             print("Not found")
-        elif status_code == 403:
-            reset_timestamp = int(response.headers.get('X-RateLimit-Reset', 0))
-            reset_time = (reset_timestamp - time.time()) / 60
-            print(f"Reset in {int(reset_time)} min")
+        elif res.status_code == 200:
+            user_info = res.json()
+            location = user_info.get('location', 'Location not specified')
+            print(location)
         else:
-            print("An error occurred:", status_code)
+            print(f"Unexpected error: {res.status_code}")
     except requests.RequestException as e:
-        print("Failed to retrieve data:", e)
+        print(f"Failed to retrieve data: {e}")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: ./2-user_location.py <GitHub API user URL>")
     else:
-        get_user_location(sys.argv[1])
+        get_github_user_location(sys.argv[1])
 
