@@ -7,6 +7,18 @@ import sys
 import time
 
 def get_github_user_location(url):
+    """
+    Fetch and display the location of a specified GitHub user.
+
+    Parameters:
+        url (str): The full API URL of the GitHub user.
+
+    Behavior:
+        - If the request status code is 403, prints the time until rate limit reset.
+        - If the request status code is 404, prints "Not found".
+        - If the request is successful (200), prints the user's location.
+        - If the location is not specified, indicates that.
+    """
     try:
         res = requests.get(url)
         
