@@ -3,6 +3,7 @@
 Defines class NST that performs tasks for neural style transfer
 """
 
+
 import numpy as np
 import tensorflow as tf
 
@@ -52,6 +53,7 @@ class NST:
             beta [float]: weight for style cost
 
         Raises TypeError if input are in incorrect format
+        Sets TensorFlow to execute eagerly
         Sets instance attributes
         """
         if type(style_image) is not np.ndarray or \
@@ -74,6 +76,8 @@ class NST:
             raise TypeError("alpha must be a non-negative number")
         if (type(beta) is not float and type(beta) is not int) or beta < 0:
             raise TypeError("beta must be a non-negative number")
+
+        tf.enable_eager_execution()
 
         self.style_image = self.scale_image(style_image)
         self.content_image = self.scale_image(content_image)
@@ -114,9 +118,8 @@ class NST:
             w_new = 512
             h_new = int(h * (512 / w))
 
-        resized = tf.image.resize(np.expand_dims(image, axis=0),
-                                  size=(h_new, w_new),
-                                  method=tf.image.ResizeMethod.BICUBIC)
+        resized = tf.image.resize_bicubic(np.expand_dims(image, axis=0),
+                                          size=(h_new, w_new))
         rescaled = resized / 255
         rescaled = tf.clip_by_value(rescaled, 0, 1)
         return (rescaled)
@@ -133,18 +136,24 @@ class NST:
         """
         VGG19_model = tf.keras.applications.VGG19(include_top=False,
                                                   weights='imagenet')
+        VGG19_model.save("VGG19_base_model")
+        custom_objects = {'MaxPooling2D': tf.keras.layers.AveragePooling2D}
+
+        vgg = tf.keras.models.load_model("VGG19_base_model",
+                                         custom_objects=custom_objects)
 
         style_outputs = []
         content_output = None
 
-        for layer in VGG19_model.layers:
+        for layer in vgg.layers:
             if layer.name in self.style_layers:
                 style_outputs.append(layer.output)
-            if layer.name == self.content_layer:
+            if layer.name in self.content_layer:
                 content_output = layer.output
 
             layer.trainable = False
 
         outputs = style_outputs + [content_output]
 
-        self.model = tf.keras.models.Model(VGG19_model.input, outputs)
+        model = tf.keras.models.Model(vgg.input, outputs)
+        self.model = model
