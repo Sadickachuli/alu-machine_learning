@@ -168,24 +168,35 @@ class NST:
         gram = tf.reduce_mean(tf.square(gram_style - gram_target))
         return gram
 
-    def style_cost(self, style_outputs):
-        """
-        Calculates the style cost for generated image
-        """
-        length = len(self.style_layers)
+def style_cost(self, style_outputs):
+    """
+    Calculates the style cost for the generated image.
 
-        if not isinstance(style_outputs, list) or len(
-                style_outputs) != length:
-            raise TypeError(
-                'style_outputs must be a list with a length of {}'.format(
-                    length))
+    parameters:
+        style_outputs [list of tf.Tensor]:
+            style outputs for the generated image
 
-        style_cost = 0.0
-        weight_per_style = 1.0 / length
+    returns:
+        the total style cost
+    """
+    # Validate style_outputs type and length
+    if not isinstance(style_outputs, list) or \
+       len(style_outputs) != len(self.style_layers):
+        raise TypeError(
+            "style_outputs must be a list with a length of {}".format(
+                len(self.style_layers)))
 
-        for i in range(length):
-            style_cost += weight_per_style * self.layer_style_cost(
-                style_outputs[i], self.gram_style_features[i]
-            )
+    # Calculate weights for each layer (evenly distributed, summing to 1)
+    weights = [1.0 / len(self.style_layers)] * len(self.style_layers)
 
-        return style_cost
+    # Initialize total style cost
+    total_style_cost = 0
+
+    # Iterate over style outputs and corresponding target gram matrices
+    for i, style_output in enumerate(style_outputs):
+        gram_target = self.gram_style_features[i]  # Target gram matrix for the layer
+        layer_cost = self.layer_style_cost(style_output, gram_target)
+        total_style_cost += weights[i] * layer_cost  # Weighted cost for the layer
+
+    return total_style_cost
+
