@@ -22,7 +22,6 @@ class NST:
         content_image: preprocessed style image
         alpha: weight for content cost
         beta: weight for style cost
-        model: the Keras model used to calculate cost
 
     class constructor:
         def __init__(self, style_image, content_image, alpha=1e4, beta=1)
@@ -31,10 +30,6 @@ class NST:
         def scale_image(image):
             rescales an image so the pixel values are between 0 and 1
                 and the largest side is 512 pixels
-
-    public instance methods:
-        def load_model(self):
-            creates model used to calculate cost from VGG19 Keras base model
     """
     style_layers = ['block1_conv1', 'block2_conv1', 'block3_conv1',
                     'block4_conv1', 'block5_conv1']
@@ -83,6 +78,7 @@ class NST:
         self.content_image = self.scale_image(content_image)
         self.alpha = alpha
         self.beta = beta
+
         self.load_model()
 
     @staticmethod
@@ -125,15 +121,15 @@ class NST:
         return (rescaled)
 
     def load_model(self):
-        """
-        Creates the model used to calculate cost from VGG19 Keras base model
-
-        Model's input should match VGG19 input
-        Model's output should be a list containing outputs of VGG19 layers
-            listed in style_layers followed by content_layers
-
-        Saves the model in the instance attribute model
-        """
+        '''
+            creates the model used to calculate cost
+            the model should use the VGG19 Keras model as a base
+            the model’s input should be the same as the VGG19 input
+            the model’s output should be a list containing the outputs
+            of the VGG19 layers listed in style_layers followed by content
+            _layer
+            saves the model in the instance attribute model
+        '''
         VGG19_model = tf.keras.applications.VGG19(include_top=False,
                                                   weights='imagenet')
         VGG19_model.save("VGG19_base_model")

@@ -253,4 +253,8 @@ class NST:
                 style_outputs[i], self.gram_style_features[i]
             )
 
+<<<<<<< HEAD
         return style_cost
+=======
+        return style_cost
+>>>>>>> 84da8baeeaef16367a837bdcefaea15999548b73
