@@ -22,7 +22,6 @@ class NST:
         content_image: preprocessed style image
         alpha: weight for content cost
         beta: weight for style cost
-        model: the Keras model used to calculate cost
 
     class constructor:
         def __init__(self, style_image, content_image, alpha=1e4, beta=1)
@@ -31,12 +30,6 @@ class NST:
         def scale_image(image):
             rescales an image so the pixel values are between 0 and 1
                 and the largest side is 512 pixels
-        def gram_matrix(input_layer):
-            calculates gram matrices
-
-    public instance methods:
-        def load_model(self):
-            creates model used to calculate cost from VGG19 Keras base model
     """
     style_layers = ['block1_conv1', 'block2_conv1', 'block3_conv1',
                     'block4_conv1', 'block5_conv1']
@@ -85,6 +78,7 @@ class NST:
         self.content_image = self.scale_image(content_image)
         self.alpha = alpha
         self.beta = beta
+
         self.load_model()
 
     @staticmethod
@@ -127,15 +121,15 @@ class NST:
         return (rescaled)
 
     def load_model(self):
-        """
-        Creates the model used to calculate cost from VGG19 Keras base model
-
-        Model's input should match VGG19 input
-        Model's output should be a list containing outputs of VGG19 layers
-            listed in style_layers followed by content_layers
-
-        Saves the model in the instance attribute model
-        """
+        '''
+            creates the model used to calculate cost
+            the model should use the VGG19 Keras model as a base
+            the model’s input should be the same as the VGG19 input
+            the model’s output should be a list containing the outputs
+            of the VGG19 layers listed in style_layers followed by content
+            _layer
+            saves the model in the instance attribute model
+        '''
         VGG19_model = tf.keras.applications.VGG19(include_top=False,
                                                   weights='imagenet')
         VGG19_model.save("VGG19_base_model")
@@ -162,21 +156,24 @@ class NST:
 
     @staticmethod
     def gram_matrix(input_layer):
-        """
-        Calculates gram matrices
+        '''
+            Update the class NST to be able to calculate gram matrices:
 
-        parameters:
-            input_layer [an instance of tf.Tensor or tf.Variable
-                of shape (1, h, w, c)]:
-                contains the layer output to calculate gram matrix for
+            parameters:
+                input_layer [numpy.ndarray of shape (h, w, c)]:
+                    containing the layer output for which the
+                    gram matrix is calculated
 
-        returns:
-            tf.Tensor of shape (1, c, c) containing gram matrix of input_layer
-        """
-        if not isinstance(input_layer, (tf.Tensor, tf.Variable)):
+            returns:
+                the gram matrix as a numpy.ndarray of shape
+                (c, c)
+        '''
+        if not (isinstance(input_layer, tf.Tensor) or
+                isinstance(input_layer, tf.Variable)) or len(
+                    input_layer.shape
+        ) != 4:
             raise TypeError("input_layer must be a tensor of rank 4")
-        if len(input_layer.shape) is not 4:
-            raise TypeError("input_layer must be a tensor of rank 4")
+
         _, h, w, c = input_layer.shape
         product = int(h * w)
         features = tf.reshape(input_layer, (product, c))
