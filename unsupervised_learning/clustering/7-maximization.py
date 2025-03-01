@@ -11,6 +11,17 @@ import numpy as np
 def maximization(X, g):
     """
     initializes variables for a Gaussian Mixture Model
+
+    X: numpy.ndarray (n, d) containing the dataset
+        - n no. of data points
+        - d no. of dimensions for each data point
+    g: numpy.ndarray (k, n) containing the posterior
+        probabilities for each data point in each cluster
+
+    return:
+        - pi: numpy.ndarray (k,) containing the updated priors for each cluster
+        - m: numpy.ndarray (k, d) has updated centroid means for each cluster
+        - S: numpy.ndarray (k, d, d) updated cov matrices for each cluster
     """
     if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None, None
